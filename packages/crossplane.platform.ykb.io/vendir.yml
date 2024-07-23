@@ -1,0 +1,23 @@
+apiVersion: vendir.k14s.io/v1alpha1
+directories:
+- contents:
+  - helmChart:
+      name: crossplane
+      repository:
+        url: https://charts.crossplane.io/stable
+      version: 1.16.0
+    path: crossplane
+  path: config/helm/upstream
+- contents:
+  # The Crossplane Helm chart doesn't include CRDs, which are created at runtime.
+  # We fetch them explicitly to make it possible to instantiate CR as part of this package. 
+  - git:
+      ref: v1.16.0
+      url: https://github.com/crossplane/crossplane
+    includePaths:
+    - cluster/crds/*.yaml
+    - cluster/meta/*.yaml
+    newRootPath: cluster
+    path: crossplane
+  path: config/carvel/upstream
+kind: Config
