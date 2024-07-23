@@ -59,7 +59,8 @@ spec:
   packageRef:
     refName: crossplane.platform.ykb.io
     versionSelection:
-      constraints: 1.6.0
+      constraints: 0.0.0
+  serviceAccountName: crossplane-sa
 status:
   conditions: null
   friendlyDescription: ""
