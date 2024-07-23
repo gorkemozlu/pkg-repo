@@ -1,0 +1,64 @@
+apiVersion: data.packaging.carvel.dev/v1alpha1
+kind: Package
+metadata:
+  creationTimestamp: null
+  name: crossplane.platform.ykb.io.1.6.0
+spec:
+  refName: crossplane.platform.ykb.io
+  releasedAt: null
+  template:
+    spec:
+      deploy:
+      - kapp:
+          intoNs: crossplane-system
+      fetch:
+      - git: {}
+      template:
+      - helmTemplate:
+          name: crossplane
+          namespace: crossplane-system
+          path: config/helm/upstream/crossplane
+          valuesFrom:
+          - path: config/helm/values.yml
+      - ytt:
+          ignoreUnknownComments: true
+          paths:
+          - '-'
+          - config/carvel
+      - kbld: {}
+  valuesSchema:
+    openAPIv3: null
+  version: 1.6.0
+
+---
+apiVersion: data.packaging.carvel.dev/v1alpha1
+kind: PackageMetadata
+metadata:
+  name: crossplane.platform.ykb.io
+spec:
+  displayName: "Crossplane Carvel Package"
+  longDescription: "Crossplane"
+  shortDescription: "Crossplane"
+  categories:
+  - Crossplane
+  providerName: YapiKredi
+  maintainers:
+  - name: "Gorkem Ozlu"
+  - name: "Platform Team"
+---
+apiVersion: packaging.carvel.dev/v1alpha1
+kind: PackageInstall
+metadata:
+  annotations:
+    kctrl.carvel.dev/local-fetch-0: .
+  creationTimestamp: null
+  name: crossplane
+spec:
+  packageRef:
+    refName: crossplane.platform.ykb.io
+    versionSelection:
+      constraints: 1.6.0
+status:
+  conditions: null
+  friendlyDescription: ""
+  observedGeneration: 0
