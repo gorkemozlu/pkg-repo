@@ -28,7 +28,7 @@ spec:
           - kbld: {}
       export:
       - imgpkgBundle:
-          image: localhost/docker-local/pkg-crossplane
+          image: bgorkemozlu/pkg-crossplane
           useKbldImagesLock: true
         includePaths:
         - config
