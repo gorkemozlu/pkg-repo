@@ -18,5 +18,9 @@ metadata:
   name: provider-terraform
 spec:
   package: xpkg.upbound.io/upbound/provider-terraform:v0.17.0
+  #@ if hasattr(data.values, "imagePullsecret"):
+  packagePullSecrets: 
+    - name: #@ data.values.imagePullsecret
+  #@ end
   controllerConfigRef:
     name: terraform
