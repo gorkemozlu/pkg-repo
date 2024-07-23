@@ -4,6 +4,8 @@ metadata:
   creationTimestamp: null
   name: crossplane.platform.ykb.io
 spec:
+  release:
+  - resource: {}
   template:
     spec:
       app:
@@ -17,7 +19,7 @@ spec:
               namespace: crossplane-system
               path: config/helm/upstream/crossplane
               valuesFrom:
-              - path: config/helm/values.yml
+              - path: config/helm/values.yaml
           - ytt:
               ignoreUnknownComments: true
               paths:
