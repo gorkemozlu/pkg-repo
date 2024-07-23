@@ -34,17 +34,19 @@ spec:
 apiVersion: data.packaging.carvel.dev/v1alpha1
 kind: PackageMetadata
 metadata:
+  creationTimestamp: null
   name: crossplane.platform.ykb.io
 spec:
-  displayName: "Crossplane Carvel Package"
-  longDescription: "Crossplane"
-  shortDescription: "Crossplane"
   categories:
   - Crossplane
-  providerName: YapiKredi
+  displayName: crossplane
+  longDescription: Crossplane
   maintainers:
-  - name: "Gorkem Ozlu"
-  - name: "Platform Team"
+  - name: Gorkem Ozlu
+  - name: Platform Team
+  providerName: YapiKredi
+  shortDescription: Crossplane
+
 ---
 apiVersion: packaging.carvel.dev/v1alpha1
 kind: PackageInstall
