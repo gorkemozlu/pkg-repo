@@ -9,8 +9,8 @@ stringData:
     test: gorkem
     providerConfig:
       terraform:
-        poll: 15m
-        maxReconcileRate: 15
+        poll: 10m
+        maxReconcileRate: 10
     imagePullsecret: registrypullsecret
 ---
 apiVersion: v1
@@ -67,7 +67,7 @@ spec:
   packageRef:
     refName: crossplane.platform.ykb.io
     versionSelection:
-      constraints: 0.0.0+build.1721761371
+      constraints: 0.0.0+build.1721763176
   values:
   - secretRef:
       name: crossplane-values
