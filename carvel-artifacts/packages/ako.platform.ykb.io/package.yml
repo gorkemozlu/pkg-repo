@@ -1,0 +1,317 @@
+apiVersion: data.packaging.carvel.dev/v1alpha1
+kind: Package
+metadata:
+  creationTimestamp: null
+  name: ako.platform.ykb.io.0.0.0+build.1721841247
+spec:
+  refName: ako.platform.ykb.io
+  releasedAt: "2024-07-24T17:14:15Z"
+  template:
+    spec:
+      deploy:
+      - kapp:
+          intoNs: avi-system
+      fetch:
+      - imgpkgBundle:
+          image: index.docker.io/bgorkemozlu/pkg-ako@sha256:48b1d34b20c7f893d8902979129f1f38ae46c5631d55d8e99536ca262a616317
+      template:
+      - helmTemplate:
+          name: ako
+          namespace: avi-system
+          path: config/helm/upstream/ako
+          valuesFrom:
+          - path: config/helm/values.yaml
+      - ytt:
+          ignoreUnknownComments: true
+          paths:
+          - '-'
+          - config/carvel
+      - kbld:
+          paths:
+          - '-'
+          - .imgpkg/images.yml
+  valuesSchema:
+    openAPIv3:
+      properties:
+        AKOSettings:
+          description: '# This section outlines the generic AKO settings'
+          properties:
+            apiServerPort:
+              default: 8080
+              type: integer
+            blockedNamespaceList:
+              default: []
+              description: This is the list of system namespaces from which AKO will
+                not listen any Kubernetes or Openshift object event.
+              items: {}
+              type: array
+            clusterName:
+              default: my-cluster
+              type: string
+            cniPlugin:
+              default: ""
+              type: string
+            deleteConfig:
+              default: "false"
+              type: string
+            disableStaticRouteSync:
+              default: "false"
+              type: string
+            enableEVH:
+              default: false
+              type: boolean
+            enableEvents:
+              default: "true"
+              type: string
+            fullSyncFrequency:
+              default: "1800"
+              type: string
+            ipFamily:
+              default: ""
+              description: 'blockedNamespaceList:   - kube-system   - kube-public'
+              type: string
+            istioEnabled:
+              default: false
+              type: boolean
+            layer7Only:
+              default: false
+              type: boolean
+            logLevel:
+              default: WARN
+              type: string
+            namespaceSelector:
+              description: NamespaceSelector contains label key and value used for
+                namespacemigration Same label has to be present on namespace/s which
+                needs migration/sync to AKO
+              properties:
+                labelKey:
+                  default: ""
+                  type: string
+                labelValue:
+                  default: ""
+                  type: string
+              type: object
+            primaryInstance:
+              default: true
+              type: boolean
+            servicesAPI:
+              default: false
+              type: boolean
+            useDefaultSecretsOnly:
+              default: "false"
+              type: string
+            vipPerNamespace:
+              default: "false"
+              description: with the advancedL4 APIs which uses a fork and a version
+                of v1alpha1pre1
+              type: string
+          type: object
+        ControllerSettings:
+          description: '# This section outlines settings on the Avi controller that
+            affects AKO''s functionality.'
+          properties:
+            cloudName:
+              default: Default-Cloud
+              type: string
+            controllerHost:
+              default: ""
+              type: string
+            controllerVersion:
+              default: ""
+              type: string
+            serviceEngineGroupName:
+              default: Default-Group
+              type: string
+            tenantName:
+              default: admin
+              type: string
+            vrfName:
+              default: ""
+              type: string
+          type: object
+        GatewayAPI:
+          properties:
+            image:
+              properties:
+                pullPolicy:
+                  default: IfNotPresent
+                  type: string
+                repository:
+                  default: projects.registry.vmware.com/ako/ako-gateway-api
+                  type: string
+              type: object
+          type: object
+        L4Settings:
+          description: '# This section outlines all the knobs  used to control Layer
+            4 loadbalancing settings in AKO.'
+          properties:
+            autoFQDN:
+              default: default
+              type: string
+            defaultDomain:
+              default: ""
+              type: string
+            defaultLBController:
+              default: "true"
+              type: string
+          type: object
+        L7Settings:
+          description: '# This section outlines all the knobs  used to control Layer
+            7 loadbalancing settings in AKO.'
+          properties:
+            defaultIngController:
+              default: "true"
+              type: string
+            enableMCI:
+              default: "false"
+              type: string
+            noPGForSNI:
+              default: false
+              type: boolean
+            passthroughShardSize:
+              default: SMALL
+              type: string
+            serviceType:
+              default: ClusterIP
+              type: string
+            shardVSSize:
+              default: LARGE
+              type: string
+          type: object
+        NetworkSettings:
+          description: '# This section outlines the network settings for virtualservices.'
+          properties:
+            bgpPeerLabels:
+              default: []
+              description: 'nsxtT1LR: "/infra/tier-1s/avi-t1"'
+              items: {}
+              type: array
+            enableRHI:
+              default: false
+              description: 'nodeNetworkList:   - networkName: "network-name"     networkUUID:
+                "net-4567"     cidrs:       - 10.0.0.1/24       - 11.0.0.1/24'
+              type: boolean
+            nodeNetworkList:
+              default: []
+              description: This list of network and cidrs are used in pool placement
+                network for vcenter cloud. Node Network details are not needed when
+                in nodeport mode / static routes are disabled / non vcenter clouds.
+                Either networkName or networkUUID should be specified. If duplicate
+                networks are present for the network name, networkUUID should be used
+                for appropriate network.
+              items: {}
+              type: array
+            nsxtT1LR:
+              default: ""
+              type: string
+            vipNetworkList:
+              default: []
+              description: Network information of the VIP network. Multiple networks
+                allowed only for AWS Cloud. Either networkName or networkUUID should
+                be specified. If duplicate networks are present for the network name,
+                networkUUID should be used for appropriate network.
+              items: {}
+              type: array
+          type: object
+        akoGatewayLogFile:
+          default: avi-gw.log
+          type: string
+        avicredentials:
+          description: If username and either password or authtoken are not specified,
+            avi-secret will not be created. AKO will assume that the avi-secret already
+            exists and will reference it. The Avi Controller credentials, including
+            certificateAuthorityData, will be read from the existing avi-secret.
+          properties:
+            authtoken:
+              default: ""
+              type: string
+            certificateAuthorityData:
+              default: ""
+              type: string
+            password:
+              default: ""
+              type: string
+            username:
+              default: ""
+              type: string
+          type: object
+        featureGates:
+          description: '# FeatureGates is to enable or disable experimental features.'
+          properties:
+            EnablePrometheus:
+              default: false
+              type: boolean
+            GatewayAPI:
+              default: false
+              type: boolean
+          type: object
+        image:
+          properties:
+            pullPolicy:
+              default: IfNotPresent
+              type: string
+            pullSecrets:
+              default: []
+              items: {}
+              type: array
+            repository:
+              default: projects.registry.vmware.com/ako/ako
+              type: string
+          type: object
+        logFile:
+          default: avi.log
+          type: string
+        mountPath:
+          default: /log
+          type: string
+        nodePortSelector:
+          properties:
+            key:
+              default: ""
+              type: string
+            value:
+              default: ""
+              type: string
+          type: object
+        persistentVolumeClaim:
+          default: ""
+          type: string
+        podSecurityContext:
+          default: {}
+          type: object
+        rbac:
+          properties:
+            pspEnable:
+              default: false
+              description: Creates the pod security policy if set to true
+              type: boolean
+          type: object
+        replicaCount:
+          default: 1
+          type: integer
+        resources:
+          properties:
+            limits:
+              properties:
+                cpu:
+                  default: 350m
+                  type: string
+                memory:
+                  default: 400Mi
+                  type: string
+              type: object
+            requests:
+              properties:
+                cpu:
+                  default: 200m
+                  type: string
+                memory:
+                  default: 300Mi
+                  type: string
+              type: object
+          type: object
+        securityContext:
+          default: {}
+          type: object
+      type: object
+  version: 0.0.0+build.1721841247

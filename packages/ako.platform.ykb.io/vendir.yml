@@ -1,0 +1,12 @@
+apiVersion: vendir.k14s.io/v1alpha1
+directories:
+- contents:
+  - helmChart:
+      name: ako
+      repository:
+        url: oci://projects.registry.vmware.com/ako/helm-charts
+      version: 1.12.1
+    path: helm/upstream/ako
+  path: config
+kind: Config
+minimumRequiredVersion: ""

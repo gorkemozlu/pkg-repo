@@ -1,0 +1,15 @@
+apiVersion: data.packaging.carvel.dev/v1alpha1
+kind: PackageMetadata
+metadata:
+  creationTimestamp: null
+  name: ako.platform.ykb.io
+spec:
+  categories:
+  - ako
+  displayName: ako
+  longDescription: ako
+  maintainers:
+  - name: Gorkem Ozlu
+  - name: Platform Team
+  providerName: YapiKredi
+  shortDescription: ako

@@ -1,0 +1,67 @@
+apiVersion: data.packaging.carvel.dev/v1alpha1
+kind: Package
+metadata:
+  creationTimestamp: null
+  name: ako.platform.ykb.io.1.6.0
+spec:
+  refName: ako.platform.ykb.io
+  releasedAt: null
+  template:
+    spec:
+      deploy:
+      - kapp:
+          intoNs: avi-system
+      fetch:
+      - git: {}
+      template:
+      - helmTemplate:
+          name: ako
+          namespace: avi-system
+          path: config/helm/upstream/ako
+          valuesFrom:
+          - path: config/helm/values.yaml
+      - ytt:
+          ignoreUnknownComments: true
+          paths:
+          - '-'
+          - config/carvel
+      - kbld: {}
+  valuesSchema:
+    openAPIv3: null
+  version: 1.6.0
+
+---
+apiVersion: data.packaging.carvel.dev/v1alpha1
+kind: PackageMetadata
+metadata:
+  creationTimestamp: null
+  name: ako.platform.ykb.io
+spec:
+  categories:
+  - ako
+  displayName: ako
+  longDescription: ako
+  maintainers:
+  - name: Gorkem Ozlu
+  - name: Platform Team
+  providerName: YapiKredi
+  shortDescription: ako
+
+---
+apiVersion: packaging.carvel.dev/v1alpha1
+kind: PackageInstall
+metadata:
+  annotations:
+    kctrl.carvel.dev/local-fetch-0: .
+  creationTimestamp: null
+  name: ako
+spec:
+  packageRef:
+    refName: ako.platform.ykb.io
+    versionSelection:
+      constraints: 0.0.0
+  serviceAccountName: ako-sa
+status:
+  conditions: null
+  friendlyDescription: ""
+  observedGeneration: 0
