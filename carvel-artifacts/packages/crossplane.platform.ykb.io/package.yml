@@ -2,10 +2,10 @@ apiVersion: data.packaging.carvel.dev/v1alpha1
 kind: Package
 metadata:
   creationTimestamp: null
-  name: crossplane.platform.ykb.io.0.0.0+build.1721761371
+  name: crossplane.platform.ykb.io.0.0.0+build.1722429660
 spec:
   refName: crossplane.platform.ykb.io
-  releasedAt: "2024-07-23T19:02:59Z"
+  releasedAt: "2024-07-31T12:41:18Z"
   template:
     spec:
       deploy:
@@ -13,7 +13,7 @@ spec:
           intoNs: crossplane-system
       fetch:
       - imgpkgBundle:
-          image: index.docker.io/bgorkemozlu/pkg-crossplane@sha256:a04ebf5dffcf2571ee13b3169477c54bab4fe39adbe7197e4d7e8924961276d1
+          image: index.docker.io/bgorkemozlu/pkg-crossplane@sha256:adf2ca35fc418c2d07b0a6e7614aaa4bcb31d9309b44b24fb022b38fbad208aa
       template:
       - helmTemplate:
           name: crossplane
@@ -363,4 +363,4 @@ spec:
               type: boolean
           type: object
       type: object
-  version: 0.0.0+build.1721761371
+  version: 0.0.0+build.1722429660

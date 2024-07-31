@@ -1,6 +1,0 @@
-#@data/values
----
-providerConfig:
-  terraform:
-    poll: 15m
-    maxReconcileRate: 15

@@ -67,7 +67,7 @@ spec:
   packageRef:
     refName: crossplane.platform.ykb.io
     versionSelection:
-      constraints: 0.0.0+build.1721763176
+      constraints: 0.0.0+build.1722429660
   values:
   - secretRef:
       name: crossplane-values
