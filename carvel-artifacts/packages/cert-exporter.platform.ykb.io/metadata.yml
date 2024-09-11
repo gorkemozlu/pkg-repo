@@ -1,0 +1,16 @@
+apiVersion: data.packaging.carvel.dev/v1alpha1
+kind: PackageMetadata
+metadata:
+  creationTimestamp: null
+  name: cert-exporter.platform.ykb.io
+  namespace: packages
+spec:
+  categories:
+  - cert-exporter
+  displayName: cert-exporter
+  longDescription: cert-exporter
+  maintainers:
+  - name: Gorkem Ozlu
+  - name: Platform Team
+  providerName: YapiKredi
+  shortDescription: cert-exporter

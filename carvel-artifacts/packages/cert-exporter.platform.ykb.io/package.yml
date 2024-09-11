@@ -1,0 +1,829 @@
+apiVersion: data.packaging.carvel.dev/v1alpha1
+kind: Package
+metadata:
+  creationTimestamp: null
+  name: cert-exporter.platform.ykb.io.0.0.0+build.1726045736
+  namespace: packages
+spec:
+  refName: cert-exporter.platform.ykb.io
+  releasedAt: "2024-09-11T09:09:05Z"
+  template:
+    spec:
+      deploy:
+      - kapp:
+          intoNs: exporters
+      fetch:
+      - imgpkgBundle:
+          image: index.docker.io/bgorkemozlu/pkg-x509-certificate-exporter@sha256:f3922e62cbaefd806ea44dae5889d3c1b201b03619b0341ee791dc2cef077757
+      template:
+      - helmTemplate:
+          name: x509-certificate-exporter
+          namespace: exporters
+          path: config/helm/upstream/x509-certificate-exporter
+          valuesFrom:
+          - path: config/helm/values.yaml
+      - ytt:
+          ignoreUnknownComments: true
+          paths:
+          - '-'
+          - config/carvel
+      - kbld:
+          paths:
+          - '-'
+          - .imgpkg/images.yml
+  valuesSchema:
+    openAPIv3:
+      properties:
+        exposePerCertificateErrorMetrics:
+          default: false
+          description: Enable additional metrics to report per-certificate errors
+            ; helps with identifying read errors origin not having to look at exporter
+            logs, at the expense of additional storage on Prometheus
+          type: boolean
+        exposeRelativeMetrics:
+          default: false
+          description: Enable additional metrics with relative durations instead of
+            absolute timestamps ; not recommended with Prometheus
+          type: boolean
+        extraDeploy:
+          default: []
+          description: Additional objects to deploy with the release
+          items: {}
+          type: array
+        extraDeployVerbatim:
+          default: []
+          description: Same as `extraDeploy` but objects won't go through the templating
+            engine
+          items: {}
+          type: array
+        extraLabels:
+          default: {}
+          description: Additional labels added to all chart objects
+          type: object
+        extraVolumeMounts:
+          default: []
+          description: Additionnal volume mounts added to all Pod containers (see
+            also the `secretsExporter` and `hostPathsExporter` variants)
+          items: {}
+          type: array
+        extraVolumes:
+          default: []
+          description: Additionnal volumes added to all Pods (see also the `secretsExporter`
+            and `hostPathsExporter` variants)
+          items: {}
+          type: array
+        fullnameOverride:
+          default: ""
+          description: Fully override x509-certificate-exporter.fullname template
+          type: string
+        grafana:
+          properties:
+            annotations:
+              default: {}
+              description: Annotations added to the Grafana dashboard ConfigMap (example
+                in `values.yaml`)
+              type: object
+            createDashboard:
+              default: false
+              description: Should the Grafana dashboard be deployed as a ConfigMap
+                (requires Grafana sidecar)
+              type: boolean
+            extraLabels:
+              default: {}
+              description: 'k8s-sidecar-target-directory: "/tmp/dashboards/Example"
+                -- Additional labels added to the Grafana dashboard ConfigMap'
+              type: object
+            sidecarLabel:
+              default: grafana_dashboard
+              description: ConfigMap label name the Grafana sidecar is looking for
+              type: string
+            sidecarLabelValue:
+              default: "1"
+              description: ConfigMap label value the Grafana sidecar is looking for
+              type: string
+          type: object
+        hostNetwork:
+          default: false
+          description: Enable hostNetwork mode. Useful when Prometheus is deployed
+            outside of the Kubernetes cluster
+          type: boolean
+        hostPathsExporter:
+          properties:
+            affinity:
+              default: {}
+              description: Affinity for Pods of hostPath exporters (default for all
+                hostPathsExporter.daemonSets)
+              type: object
+            daemonSets:
+              default: {}
+              description: '[SEE README] Map to define one or many DaemonSets running
+                hostPath exporters. Key is used as a name ; value is a map to override
+                all default settings set by `hostPathsExporter.*`.'
+              type: object
+            debugMode:
+              default: false
+              description: Should debug messages be produced by hostPath exporters
+                (default for all hostPathsExporter.daemonSets)
+              type: boolean
+            env:
+              default: []
+              description: Additional environment variables for container
+              items: {}
+              type: array
+            extraVolumeMounts:
+              default: []
+              description: Additionnal volume mounts added to Pod containers of hostPath
+                exporters (default for all hostPathsExporter.daemonSets ; combined
+                with global `extraVolumes`)
+              items: {}
+              type: array
+            extraVolumes:
+              default: []
+              description: Additionnal volumes added to Pods of hostPath exporters
+                (default for all hostPathsExporter.daemonSets ; combined with global
+                `extraVolumes`)
+              items: {}
+              type: array
+            hostPathVolumeType:
+              default: Directory
+              description: Type for HostPath volumes used with watched paths. Can
+                be set to `""` or null to use Kubernetes defaults. May be required
+                with RKE if Pods don't start.
+              type: string
+            nodeSelector:
+              default: {}
+              description: Node selector for Pods of hostPath exporters (default for
+                all hostPathsExporter.daemonSets)
+              type: object
+            podAnnotations:
+              default: {}
+              description: Annotations added to Pods of hostPath exporters (default
+                for all hostPathsExporter.daemonSets)
+              type: object
+            podExtraLabels:
+              default: {}
+              description: Additional labels added to Pods of hostPath exporters (default
+                for all hostPathsExporter.daemonSets)
+              type: object
+            podSecurityContext:
+              default: {}
+              description: PodSecurityContext for Pods of hostPath exporters (default
+                for all hostPathsExporter.daemonSets)
+              type: object
+            priorityClassName:
+              default: ""
+              description: PriorityClassName for Pods of hostPath exporters
+              type: string
+            resources:
+              description: ResourceRequirements for containers of hostPath exporters
+                (default for all hostPathsExporter.daemonSets) @default -- check `values.yaml`
+              properties:
+                limits:
+                  properties:
+                    cpu:
+                      default: 1
+                      type: integer
+                    memory:
+                      default: 40Mi
+                      type: string
+                  type: object
+                requests:
+                  properties:
+                    cpu:
+                      default: 10m
+                      type: string
+                    memory:
+                      default: 20Mi
+                      type: string
+                  type: object
+              type: object
+            restartPolicy:
+              default: Always
+              description: restartPolicy for Pods of hostPath exporters (default for
+                all hostPathsExporter.daemonSets)
+              type: string
+            securityContext:
+              description: SecurityContext for containers of hostPath exporters (default
+                for all hostPathsExporter.daemonSets) @default -- check `values.yaml`
+              properties:
+                capabilities:
+                  properties:
+                    drop:
+                      default: []
+                      items:
+                        default: ALL
+                        type: string
+                      type: array
+                  type: object
+                readOnlyRootFilesystem:
+                  default: true
+                  type: boolean
+                runAsGroup:
+                  default: 0
+                  type: integer
+                runAsUser:
+                  default: 0
+                  type: integer
+              type: object
+            tolerations:
+              default: []
+              description: Toleration for Pods of hostPath exporters (default for
+                all hostPathsExporter.daemonSets)
+              items: {}
+              type: array
+            updateStrategy:
+              default: {}
+              description: updateStrategy for DaemonSet of hostPath exporters (default
+                for all hostPathsExporter.daemonSets)
+              type: object
+            watchDirectories:
+              default: []
+              description: '[SEE README] List of directory paths of the host to scan
+                for PEM encoded certificate files to be watched and exported as metrics
+                (one level deep)'
+              items: {}
+              type: array
+            watchFiles:
+              default: []
+              description: '[SEE README] List of file paths of the host for PEM encoded
+                certificates to be watched and exported as metrics (one level deep)'
+              items: {}
+              type: array
+            watchKubeconfFiles:
+              default: []
+              description: '[SEE README] List of Kubeconf file paths of the host to
+                scan for embedded certificates to export metrics about'
+              items: {}
+              type: array
+          type: object
+        image:
+          properties:
+            pullPolicy:
+              default: IfNotPresent
+              description: x509-certificate-exporter image pull policy
+              type: string
+            registry:
+              default: docker.io
+              description: x509-certificate-exporter image registry
+              type: string
+            repository:
+              default: enix/x509-certificate-exporter
+              description: x509-certificate-exporter image repository
+              type: string
+            tag:
+              default: ""
+              description: x509-certificate-exporter image tag (defaults to Chart
+                appVersion)
+              type: string
+            tagSuffix:
+              default: ""
+              description: Suffix added to image tags for container flavor selection
+                (could be `-busybox`, `-alpine`, or `-scratch`)
+              type: string
+          type: object
+        imagePullSecrets:
+          default: []
+          description: Specify docker-registry secret names as an array
+          items: {}
+          type: array
+        kubeVersion:
+          default: ""
+          description: Override Kubernetes version detection ; usefull with "helm
+            template"
+          type: string
+        metricLabelsFilterList:
+          default: "null"
+          description: '(list) Restrict metric labels to this list if set. **Warning**
+            : use with caution as reducing cardinality may yield metrics collisions
+            and force the exporter to ignore certificates. This will also degrade
+            the usability of the Grafana dashboard. This list should always include
+            at least `filepath`, `secret_namespace` and `secret_name`. Also `subject_CN`
+            is highly recommended for when a file contains multiple certificates.'
+          type: "null"
+        nameOverride:
+          default: ""
+          description: |-
+            Note to contributors: We use helm-docs to generate README.md from comments in this file, so the tool should be run again when values.yaml is modified. We appreciate PRs that include this change, but you don't have to. However we wish to preserve ordering and not sort the whole list by alphanumeric order, because it doesn't suit well new users. So please use this command if you run it:  $ helm-docs --sort-values-order file
+             -- Partially override x509-certificate-exporter.fullname template (will prepend the release name)
+          type: string
+        namespaceOverride:
+          default: ""
+          description: Override the deployment namespace
+          type: string
+        podAnnotations:
+          default: {}
+          description: Annotations added to all Pods
+          type: object
+        podExtraLabels:
+          default: {}
+          description: Additional labels added to all Pods
+          type: object
+        podListenPort:
+          default: 9793
+          description: TCP port to expose Pods on (whether kube-rbac-proxy is enabled
+            or not)
+          type: integer
+        priorityClassName:
+          default: ""
+          description: PriorityClassName set for all Pods by default (could be overrided
+            with `secretsExporter` and `hostPathsExporter` specific values)
+          type: string
+        prometheusPodMonitor:
+          properties:
+            create:
+              default: false
+              description: Should a PodMonitor object be installed to scrape this
+                exporter. For prometheus-operator (kube-prometheus) users.
+              type: boolean
+            extraLabels:
+              default: {}
+              description: Additional labels to add to PodMonitor objects
+              type: object
+            metricRelabelings:
+              default: []
+              description: 'Metric relabel config for the PodMonitor, see: https://github.com/prometheus-operator/prometheus-operator/blob/main/Documentation/api.md#monitoring.coreos.com/v1.Endpoint'
+              items: {}
+              type: array
+            relabelings:
+              default: []
+              description: 'Relabel config for the PodMonitor, see: https://github.com/prometheus-operator/prometheus-operator/blob/main/Documentation/api.md#monitoring.coreos.com/v1.Endpoint'
+              items: {}
+              type: array
+            scrapeInterval:
+              default: 60s
+              description: Target scrape interval set in the PodMonitor
+              type: string
+            scrapeTimeout:
+              default: 30s
+              description: Target scrape timeout set in the PodMonitor
+              type: string
+          type: object
+        prometheusRules:
+          properties:
+            alertExtraAnnotations:
+              default: {}
+              description: Additional annotations to add to PrometheusRule rules
+              type: object
+            alertExtraLabels:
+              default: {}
+              description: Additional labels to add to PrometheusRule rules
+              type: object
+            alertOnCertificateErrors:
+              default: true
+              description: Should the CertificateError alerting rule be created to
+                notify when the exporter can't decode or process a certificate. Depends
+                on `exposePerCertificateErrorMetrics` to be enabled too.
+              type: boolean
+            alertOnReadErrors:
+              default: true
+              description: Should the X509ExporterReadErrors alerting rule be created
+                to notify when the exporter can't read files or authenticate with
+                the Kubernetes API. It aims at preventing undetected misconfigurations
+                and monitoring regressions.
+              type: boolean
+            certificateErrorsSeverity:
+              default: warning
+              description: Severity for the CertificateError alerting rule
+              type: string
+            certificateExpirationsSeverity:
+              default: critical
+              description: Severity for the CertificateExpiration alerting rule
+              type: string
+            certificateRenewalsSeverity:
+              default: warning
+              description: Severity for the CertificateRenewal alerting rule
+              type: string
+            create:
+              default: true
+              description: Should a PrometheusRule object be installed to alert on
+                certificate expiration. For prometheus-operator (kube-prometheus)
+                users.
+              type: boolean
+            criticalDaysLeft:
+              default: 14
+              description: Raise a critical alert when this little days are left before
+                a certificate expiration (two weeks to deal with ACME rate limiting
+                should this be an issue)
+              type: integer
+            disableBuiltinAlertGroup:
+              default: false
+              description: Skip all built-in alerts when using extraAlertGroups
+              type: boolean
+            extraAlertGroups:
+              default: []
+              description: Additional alert groups for custom configuration (example
+                in `values.yaml`)
+              items: {}
+              type: array
+            extraLabels:
+              default: {}
+              description: Additional labels to add to PrometheusRule objects
+              type: object
+            readErrorsSeverity:
+              default: warning
+              description: Severity for the X509ExporterReadErrors alerting rule
+              type: string
+            rulePrefix:
+              default: ""
+              description: Additional rulePrefix to PrometheusRule rules
+              type: string
+            warningDaysLeft:
+              default: 28
+              description: Raise a warning alert when this little days are left before
+                a certificate expiration (cert-manager would renew Let's Encrypt certs
+                before day 29)
+              type: integer
+          type: object
+        prometheusServiceMonitor:
+          properties:
+            create:
+              default: true
+              description: Should a ServiceMonitor object be installed to scrape this
+                exporter. For prometheus-operator (kube-prometheus) users.
+              type: boolean
+            extraLabels:
+              default: {}
+              description: Additional labels to add to ServiceMonitor objects
+              type: object
+            metricRelabelings:
+              default: []
+              description: 'Metric relabel config for the ServiceMonitor, see: https://github.com/prometheus-operator/prometheus-operator/blob/main/Documentation/api.md#monitoring.coreos.com/v1.Endpoint'
+              items: {}
+              type: array
+            relabelings:
+              default: []
+              description: 'Relabel config for the ServiceMonitor, see: https://github.com/prometheus-operator/prometheus-operator/blob/main/Documentation/api.md#monitoring.coreos.com/v1.Endpoint'
+              items: {}
+              type: array
+            scrapeInterval:
+              default: 60s
+              description: Target scrape interval set in the ServiceMonitor
+              type: string
+            scrapeTimeout:
+              default: 30s
+              description: Target scrape timeout set in the ServiceMonitor
+              type: string
+          type: object
+        psp:
+          properties:
+            create:
+              default: false
+              description: Should Pod Security Policy objects be created
+              type: boolean
+          type: object
+        rbac:
+          properties:
+            create:
+              default: true
+              description: Should RBAC objects be created
+              type: boolean
+            hostPathsExporter:
+              properties:
+                clusterRoleAnnotations:
+                  default: {}
+                  description: Annotations added to the ClusterRole for the hostPath
+                    exporters
+                  type: object
+                clusterRoleBindingAnnotations:
+                  default: {}
+                  description: Annotations added to the ClusterRoleBinding for the
+                    hostPath exporters
+                  type: object
+                serviceAccountAnnotations:
+                  default: {}
+                  description: Annotations added to the ServiceAccount for the hostPath
+                    exporters
+                  type: object
+                serviceAccountName:
+                  default: ""
+                  description: Name of the ServiceAccount for hostPath exporters (required
+                    if `rbac.create=false`)
+                  type: string
+              type: object
+            secretsExporter:
+              properties:
+                clusterRoleAnnotations:
+                  default: {}
+                  description: Annotations added to the ClusterRole for the Secrets
+                    exporter
+                  type: object
+                clusterRoleBindingAnnotations:
+                  default: {}
+                  description: Annotations added to the ClusterRoleBinding for the
+                    Secrets exporter
+                  type: object
+                serviceAccountAnnotations:
+                  default: {}
+                  description: Annotations added to the ServiceAccount for the Secrets
+                    exporter
+                  type: object
+                serviceAccountName:
+                  default: ""
+                  description: Name of the ServiceAccount for the Secrets exporter
+                    (required if `rbac.create=false`)
+                  type: string
+              type: object
+          type: object
+        rbacProxy:
+          properties:
+            enabled:
+              default: false
+              description: Should kube-rbac-proxy be used to expose exporters
+              type: boolean
+            image:
+              properties:
+                pullPolicy:
+                  default: IfNotPresent
+                  description: kube-rbac-proxy image pull policy
+                  type: string
+                registry:
+                  default: quay.io
+                  description: kube-rbac-proxy image registry
+                  type: string
+                repository:
+                  default: brancz/kube-rbac-proxy
+                  description: kube-rbac-proxy image repository
+                  type: string
+                tag:
+                  default: v0.13.1
+                  description: kube-rbac-proxy image version
+                  type: string
+              type: object
+            resources:
+              description: ResourceRequirements for all containers of kube-rbac-proxy
+                @default -- check `values.yaml`
+              properties:
+                limits:
+                  properties:
+                    cpu:
+                      default: 100m
+                      type: string
+                    memory:
+                      default: 40Mi
+                      type: string
+                  type: object
+                requests:
+                  properties:
+                    cpu:
+                      default: 10m
+                      type: string
+                    memory:
+                      default: 20Mi
+                      type: string
+                  type: object
+              type: object
+            securityContext:
+              description: SecurityContext for all containers of kube-rbac-proxy @default
+                -- check `values.yaml`
+              properties:
+                capabilities:
+                  properties:
+                    drop:
+                      default: []
+                      items:
+                        default: ALL
+                        type: string
+                      type: array
+                  type: object
+                readOnlyRootFilesystem:
+                  default: true
+                  type: boolean
+                runAsGroup:
+                  default: 65534
+                  type: integer
+                runAsNonRoot:
+                  default: true
+                  type: boolean
+                runAsUser:
+                  default: 65534
+                  type: integer
+              type: object
+            upstreamListenPort:
+              default: 9091
+              description: Listen port for the exporter running inside kube-rbac-proxy
+                exposed Pods
+              type: integer
+          type: object
+        secretsExporter:
+          properties:
+            affinity:
+              default: {}
+              description: Affinity for Pods of the TLS Secrets exporter
+              type: object
+            cache:
+              properties:
+                enabled:
+                  default: true
+                  description: Enable caching of Kubernetes objects to prevent scraping
+                    timeouts
+                  type: boolean
+                maxDuration:
+                  default: 300
+                  description: Maximum time an object can stay in cache unrefreshed
+                    (seconds) - it will be at least half of that
+                  type: integer
+              type: object
+            debugMode:
+              default: false
+              description: Should debug messages be produced by the TLS Secrets exporter
+              type: boolean
+            enabled:
+              default: true
+              description: Should the TLS Secrets exporter be running
+              type: boolean
+            env:
+              default: []
+              description: Additional environment variables for container
+              items: {}
+              type: array
+            excludeLabels:
+              default: []
+              description: Exclude TLS Secrets having these labels. Items can be keys
+                such as `my-label` or also require a value with syntax `my-label=my-value`.
+              items: {}
+              type: array
+            excludeNamespaces:
+              default: []
+              description: Exclude namespaces from being scanned by the TLS Secrets
+                exporter (evaluated after `includeNamespaces`)
+              items: {}
+              type: array
+            extraVolumeMounts:
+              default: []
+              description: Additionnal volume mounts added to Pod containers of the
+                TLS Secrets exporter (combined with global `extraVolumeMounts`)
+              items: {}
+              type: array
+            extraVolumes:
+              default: []
+              description: Additionnal volumes added to Pods of the TLS Secrets exporter
+                (combined with global `extraVolumes`)
+              items: {}
+              type: array
+            includeLabels:
+              default: []
+              description: Only watch TLS Secrets having these labels (all secrets
+                if empty). Items can be keys such as `my-label` or also require a
+                value with syntax `my-label=my-value`.
+              items: {}
+              type: array
+            includeNamespaces:
+              default: []
+              description: Restrict the list of namespaces the TLS Secrets exporter
+                should scan for certificates to watch (all namespaces if empty)
+              items: {}
+              type: array
+            kubeApiRateLimits:
+              properties:
+                burstQueries:
+                  default: 10
+                  description: Burst bucket size for queries sent to the API server
+                  type: integer
+                enabled:
+                  default: false
+                  description: Should requests to the Kubernetes API server be rate-limited
+                  type: boolean
+                queriesPerSecond:
+                  default: 5
+                  description: Maximum rate of queries sent to the API server (per
+                    second)
+                  type: integer
+              type: object
+            nodeSelector:
+              default: {}
+              description: Node selector for Pods of the TLS Secrets exporter
+              type: object
+            podAnnotations:
+              default: {}
+              description: Annotations added to Pods of the TLS Secrets exporter
+              type: object
+            podExtraLabels:
+              default: {}
+              description: Additional labels added to Pods of the TLS Secrets exporter
+              type: object
+            podSecurityContext:
+              description: PodSecurityContext for Pods of the TLS Secrets exporter
+                @default -- check `values.yaml`
+              properties:
+                runAsNonRoot:
+                  default: true
+                  type: boolean
+              type: object
+            priorityClassName:
+              default: ""
+              description: PriorityClassName for Pods of the TLS Secrets exporter
+              type: string
+            replicas:
+              default: 1
+              description: Desired number of TLS Secrets exporter Pod
+              type: integer
+            resources:
+              description: ResourceRequirements for containers of the TLS Secrets
+                exporter @default -- check `values.yaml`
+              properties:
+                limits:
+                  properties:
+                    cpu:
+                      default: 1
+                      type: integer
+                    memory:
+                      default: 150Mi
+                      type: string
+                  type: object
+                requests:
+                  properties:
+                    cpu:
+                      default: 20m
+                      type: string
+                    memory:
+                      default: 20Mi
+                      type: string
+                  type: object
+              type: object
+            restartPolicy:
+              default: Always
+              description: restartPolicy for Pods of the TLS Secrets exporter
+              type: string
+            secretTypes:
+              default: []
+              description: Which type of Secrets should be watched ; "key" is the
+                map key in the secret data @default -- check `values.yaml`
+              items:
+                properties:
+                  key:
+                    default: tls.crt
+                    type: string
+                  type:
+                    default: kubernetes.io/tls
+                    type: string
+                type: object
+              type: array
+            securityContext:
+              description: SecurityContext for containers of the TLS Secrets exporter
+                @default -- check `values.yaml`
+              properties:
+                capabilities:
+                  properties:
+                    drop:
+                      default: []
+                      items:
+                        default: ALL
+                        type: string
+                      type: array
+                  type: object
+                readOnlyRootFilesystem:
+                  default: true
+                  type: boolean
+                runAsGroup:
+                  default: 65534
+                  type: integer
+                runAsUser:
+                  default: 65534
+                  type: integer
+              type: object
+            strategy:
+              default: {}
+              description: DeploymentStrategy for the TLS Secrets exporter
+              type: object
+            tolerations:
+              default: []
+              description: Toleration for Pods of the TLS Secrets exporter
+              items: {}
+              type: array
+          type: object
+        service:
+          properties:
+            annotations:
+              default: {}
+              description: Annotations to add to the Service
+              type: object
+            create:
+              default: true
+              description: Should a Service be installed, targets all instances Deployment
+                and DaemonSets (required for ServiceMonitor)
+              type: boolean
+            extraLabels:
+              default: {}
+              description: Additional labels to add to the Service
+              type: object
+            headless:
+              default: false
+              description: Should the Service be headless
+              type: boolean
+            port:
+              default: 9793
+              description: TCP port to expose the Service on
+              type: integer
+          type: object
+        webConfiguration:
+          default: ""
+          description: HTTP server configuration for enabling TLS and authentication
+            (password, mTLS) ; see [documentation at Exporter Toolkit](https://github.com/prometheus/exporter-toolkit/blob/master/docs/web-configuration.md)
+          type: string
+        webConfigurationExistingSecret:
+          default: ""
+          description: Load the HTTP server configuration from an existing Secret
+            instead of `webConfiguration`. Key must `webconfig.yaml`.
+          type: string
+      type: object
+  version: 0.0.0+build.1726045736
