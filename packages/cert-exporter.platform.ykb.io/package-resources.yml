@@ -1,0 +1,67 @@
+apiVersion: data.packaging.carvel.dev/v1alpha1
+kind: Package
+metadata:
+  creationTimestamp: null
+  name: cert-exporter.platform.ykb.io.3.15.0
+spec:
+  refName: cert-exporter.platform.ykb.io
+  releasedAt: null
+  template:
+    spec:
+      deploy:
+      - kapp:
+          intoNs: exporters
+      fetch:
+      - git: {}
+      template:
+      - helmTemplate:
+          name: x509-certificate-exporter
+          namespace: exporters
+          path: config/helm/upstream/x509-certificate-exporter
+          valuesFrom:
+          - path: config/helm/values.yaml
+      - ytt:
+          ignoreUnknownComments: true
+          paths:
+          - '-'
+          - config/carvel
+      - kbld: {}
+  valuesSchema:
+    openAPIv3: null
+  version: 3.15.0
+
+---
+apiVersion: data.packaging.carvel.dev/v1alpha1
+kind: PackageMetadata
+metadata:
+  creationTimestamp: null
+  name: cert-exporter.platform.ykb.io
+spec:
+  categories:
+  - cert-exporter
+  displayName: cert-exporter
+  longDescription: cert-exporter
+  maintainers:
+  - name: Gorkem Ozlu
+  - name: Platform Team
+  providerName: YapiKredi
+  shortDescription: cert-exporter
+
+---
+apiVersion: packaging.carvel.dev/v1alpha1
+kind: PackageInstall
+metadata:
+  annotations:
+    kctrl.carvel.dev/local-fetch-0: .
+  creationTimestamp: null
+  name: cert-exporter
+spec:
+  packageRef:
+    refName: cert-exporter.platform.ykb.io
+    versionSelection:
+      constraints: 0.0.0
+  serviceAccountName: cert-exporter-sa
+status:
+  conditions: null
+  friendlyDescription: ""
+  observedGeneration: 0

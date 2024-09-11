@@ -1,0 +1,34 @@
+apiVersion: kctrl.carvel.dev/v1alpha1
+kind: PackageBuild
+metadata:
+  creationTimestamp: null
+  name: cert-exporter.platform.ykb.io
+spec:
+  release:
+  - resource: {}
+  template:
+    spec:
+      app:
+        spec:
+          deploy:
+          - kapp:
+              intoNs: exporters
+          template:
+          - helmTemplate:
+              name: x509-certificate-exporter
+              namespace: exporters
+              path: config/helm/upstream/x509-certificate-exporter
+              valuesFrom:
+              - path: config/helm/values.yaml
+          - ytt:
+              ignoreUnknownComments: true
+              paths:
+              - '-'
+              - config/carvel
+          - kbld: {}
+      export:
+      - imgpkgBundle:
+          image: bgorkemozlu/pkg-x509-certificate-exporter
+          useKbldImagesLock: true
+        includePaths:
+        - config

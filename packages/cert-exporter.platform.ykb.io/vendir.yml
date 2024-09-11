@@ -1,0 +1,12 @@
+apiVersion: vendir.k14s.io/v1alpha1
+directories:
+- contents:
+  - helmChart:
+      name: x509-certificate-exporter
+      repository:
+        url: https://charts.enix.io
+      version: 3.15.0
+    path: helm/upstream/x509-certificate-exporter
+  path: config
+kind: Config
+minimumRequiredVersion: ""
