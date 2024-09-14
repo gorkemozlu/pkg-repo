@@ -2,7 +2,7 @@ apiVersion: data.packaging.carvel.dev/v1alpha1
 kind: Package
 metadata:
   creationTimestamp: null
-  name: ako.platform.ykb.io.1.6.0
+  name: ako.platform.ykb.io.1.12.2
 spec:
   refName: ako.platform.ykb.io
   releasedAt: null
@@ -28,7 +28,7 @@ spec:
       - kbld: {}
   valuesSchema:
     openAPIv3: null
-  version: 1.6.0
+  version: 1.12.2
 
 ---
 apiVersion: data.packaging.carvel.dev/v1alpha1

@@ -2,10 +2,10 @@ apiVersion: data.packaging.carvel.dev/v1alpha1
 kind: Package
 metadata:
   creationTimestamp: null
-  name: ako.platform.ykb.io.0.0.0+build.1721841247
+  name: ako.platform.ykb.io.1.12.2
 spec:
   refName: ako.platform.ykb.io
-  releasedAt: "2024-07-24T17:14:15Z"
+  releasedAt: "2024-09-14T05:23:10Z"
   template:
     spec:
       deploy:
@@ -13,7 +13,7 @@ spec:
           intoNs: avi-system
       fetch:
       - imgpkgBundle:
-          image: index.docker.io/bgorkemozlu/pkg-ako@sha256:48b1d34b20c7f893d8902979129f1f38ae46c5631d55d8e99536ca262a616317
+          image: index.docker.io/bgorkemozlu/pkg-ako@sha256:cf85fcc642cb0c27592147f0feed07b96ff5ae24023ae1393f034eea79937ba8
       template:
       - helmTemplate:
           name: ako
@@ -314,4 +314,4 @@ spec:
           default: {}
           type: object
       type: object
-  version: 0.0.0+build.1721841247
+  version: 1.12.2

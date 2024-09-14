@@ -81,7 +81,7 @@ spec:
   packageRef:
     refName: ako.platform.ykb.io
     versionSelection:
-      constraints: 0.0.0+build.1721841247
+      constraints: 1.12.2
   values:
   - secretRef:
       name: ako-values

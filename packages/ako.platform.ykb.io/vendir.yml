@@ -5,7 +5,7 @@ directories:
       name: ako
       repository:
         url: oci://projects.registry.vmware.com/ako/helm-charts
-      version: 1.12.1
+      version: 1.12.2
     path: helm/upstream/ako
   path: config
 kind: Config
